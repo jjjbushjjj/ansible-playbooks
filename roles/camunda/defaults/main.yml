@@ -1,0 +1,25 @@
+---
+# defaults file for camunda
+
+camunda_platform: tomcat
+camunda_ver: 7.8
+
+camunda_remove_examples: False
+camunda_example_apps:
+  - camunda-invoice
+  - camunda-welcome
+  - engine-rest
+  - examples
+  - host-manager
+  - manager
+  - ROOT
+  - doc
+  - h2
+camunda_archive: "camunda-bpm-{{camunda_platform}}-{{camunda_ver}}.0.tar.gz"
+camunda_dist_url: "https://camunda.org/release/camunda-bpm/{{camunda_platform}}/{{camunda_ver}}/{{camunda_archive}}"
+camunda_install_dir: "/opt/camunda"
+camunda_user: camunda
+camunda_group: camunda
+camunda_tomcat_xms: 128M 
+camunda_tomcat_xmx: 765M 
+

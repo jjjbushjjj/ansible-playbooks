@@ -1,0 +1,7 @@
+---
+
+- hosts: victim
+  gather_facts: no
+
+  roles:
+    - camunda

@@ -1,0 +1,17 @@
+#jinja2:lstrip_blocks:"True"
+{% for up in upstreams %}
+  upstream {{ up.name }} {
+    {% for srv in up.serv %}
+      {% if down is defined and down == 'odd' and srv|regex_search('(^\w+\d*[13579])($|\D)') %}
+        server {{ srv }}  weight=1 down;
+      {% elif down is defined and down == 'even' and srv|regex_search('(^\w+\d*[02468])($|\D)') %}
+        server {{ srv }}  weight=1 down;
+      {% elif down is defined and srv in down %}
+        server {{ srv }}  weight=1 down;
+      {% else %}
+        server {{ srv }}  weight=1;
+      {% endif %}
+    {% endfor %}
+  }
+{% endfor %}
+  

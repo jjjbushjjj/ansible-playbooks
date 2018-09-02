@@ -1,0 +1,103 @@
+---
+# tasks file for camunda
+
+- include_tasks: setup-CentOS.yml
+  when: ansible_distribution == 'CentOS'
+
+- name: Check if we are on clean install or have existing one
+  command: >
+      grep -oP 'BPM platform version: \K\d+\.\d+' {{camunda_install_dir}}/README.txt 
+  register: camunda_version_present
+  changed_when: false
+  failed_when: false
+
+- name: Changed camunda version
+  block: 
+    - pause: >
+        prompt='I will REMOVE! current camunda installation Ver: {{camunda_version_present.stdout}}
+        and make clean install Ver: {{camunda_ver}} Press return to continue. Press Ctrl+c and then "a" to abort'
+
+    - name: Clean previous Camunda installation
+      file: >
+        path="{{camunda_install_dir}}"
+        state=absent
+  when: (camunda_version_present.stdout != "") and (camunda_version_present.stdout|float != camunda_ver|float)
+
+- name: Get distr from url
+  get_url: >
+    dest="/tmp/{{camunda_archive}}"
+    url="{{camunda_dist_url}}"
+
+- name: Ensure camunda group is present
+  group: >
+    name="{{camunda_group}}"
+  
+    state=present
+    system=yes
+
+- name: ensure camunda user is present
+  user: >
+    name="{{camunda_user}}"
+  
+    groups=camunda
+    home="{{camunda_install_dir}}"
+    system=yes
+    state=present
+
+- name: Ensure camunda base catalog is present
+  file: >
+    path="{{camunda_install_dir}}"
+  
+    group="{{camunda_group}}"
+    state=directory
+    owner="{{camunda_user}}"
+   
+- name: Unarchive camunda distr
+  unarchive: >
+    src="/tmp/{{camunda_archive}}"
+    dest="{{camunda_install_dir}}"
+  
+    group="{{camunda_group}}"
+    owner="{{camunda_user}}"
+    copy=no 
+    creates="{{camunda_install_dir}}/README.txt"
+  become_user: "{{camunda_user}}"
+  notify: camunda restart
+
+- name: Get tomcat server version
+  shell: >
+    ls {{camunda_install_dir}}/server | rev | cut -d- -f1 | rev
+  changed_when: false
+  register: tomcat_ver
+
+- name: Set tomcat version fact
+  set_fact: >
+    camunda_tomcat_ver={{tomcat_ver.stdout}}
+
+
+- name: Clean webapps from examples
+  file: >
+    path="{{camunda_install_dir}}/server/apache-tomcat-{{camunda_tomcat_ver}}/webapps/{{item}}"
+    state=absent
+  with_items: "{{camunda_example_apps}}"
+  when: camunda_remove_examples
+
+- name: Ensure systemd unit is present
+  template: >
+    dest=/etc/systemd/system/camunda.service
+    src=camunda.service.j2
+  
+    owner=root
+    group=root
+  notify: 
+    - systemd-reload
+    - camunda restart
+
+- meta: flush_handlers
+
+- name: Ensure camunda service is started and enabled at boot
+  service: >
+    name=camunda
+  
+    enabled=yes
+    state=started

@@ -1,0 +1,25 @@
+---
+
+upstreams:
+  - name: aaa
+    serv:
+      - "esb1-work:3256"
+      - "esb2-work:56457"
+  - name: bbb
+    serv:
+      - "esb44-work"
+      - "esb3-work"
+      - "esb4-work"
+  - name: ccc
+    serv:
+      - "esb54-test"
+      - "esb67-test"
+  - name: ggg
+    serv:
+      - "huypizdaidjigurda12aaa"
+      - "ololosha33bbb"
+  - name: ddd
+    serv:
+      - "huypizdaidjigurda12"
+      - "ololosha33"
+      - "ohshi44ok"

@@ -1,0 +1,37 @@
+---
+# tasks file for nginx
+
+- name: Check if we have list of servers on maintanance
+  include_vars:
+    file: /tmp/down.yml
+  failed_when: False
+
+- name: Gen upstreams from template
+  template: >
+    dest=/tmp/upstreams.conf
+    src=upstreams.j2
+
+ 
+# - name: Mark even
+#   replace: >
+#     path=/tmp/upstreams.conf
+#     regexp='(server\s+\w+\d*[02468]\D.*);'
+#     replace='\1 down;'
+#   when: (down is defined) and down == 'even'
+
+# - name: Mark odd
+#   replace: >
+#     path=/tmp/upstreams.conf
+#     regexp='(server\s+\w+\d*[13579]\D.*);'
+#     replace='\1 down;'
+#   when: (down is defined) and down == 'odd'
+
+# - name: Mark special
+#   replace: >
+#     path=/tmp/upstreams.conf
+#     regexp='(server\s+{{item}}.*);'
+#     replace='\1 down;'
+#   with_items: "{{down}}"
+#   when: (down is defined) and (down != 'odd') and (down != 'even') and ( down != None )
+
+  

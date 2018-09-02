@@ -1,0 +1,82 @@
+---
+
+- hosts: manager[0]
+
+  tasks:
+    - name: Ensure network traefik-net is present
+      docker_network: >
+        name=traefik-net
+        driver=overlay
+        state=present
+      
+    - name: test
+      command: >
+        docker service create
+        --name traefik
+        --constraint=node.role==manager
+        --publish 80:80 --publish 8080:8080
+        --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock
+        --network traefik-net
+        traefik
+        --docker
+        --docker.swarmMode
+        --docker.domain=swarm.main.local
+        --docker.watch
+        --api
+        --logLevel="DEBUG"
+
+    # - name: install all packages needed for docker_service module to run
+    #   yum: >
+    #     name={{item}}
+    #   with_items:
+    #     - epel-release
+    #     - python-pip
+
+    # - name: Install python docker compose via pip
+    #   pip: >
+    #     name={{item}}
+    #   with_items:
+    #     - docker
+    #     - docker-compose
+
+    # - name: Ensure traefik ervice is present ans in good condition
+    #   docker_service:
+    #     project_name: traefik
+    #     pull: true
+    #     state: present
+    #     debug: yes
+    #     definition:
+    #       version: '3'
+    #       services:
+    #         traefik:
+    #           image: traefik
+    #           command:
+    #             - "--api"
+    #             - "--docker"
+    #             - "--docker.swarmMode"
+    #             - "--docker.domain=local"
+    #             - "--docker.watch"
+    #           volumes:
+    #             - /var/run/docker.sock:/var/run/docker.sock
+    #           networks:
+    #             - webgateway
+    #             - traefik
+    #           ports:
+    #             - 80:80
+    #             - 8080:8080
+    #           deploy:
+    #             mode: global
+    #             placement:
+    #               constraints:
+    #                 - node.role == manager
+    #       networks:
+    #         webgateway:
+    #           external: true
+    #         traefik:
+    #           driver: overlay
+
+
+
+      
+
+

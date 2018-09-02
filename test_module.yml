@@ -1,0 +1,15 @@
+---
+
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Test module
+      test_module:
+        name: fail me
+        new: true
+      register: testout
+
+    - name: dump test
+      debug:
+        msg: '{{ testout }}'

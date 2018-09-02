@@ -1,0 +1,24 @@
+# Systemd unit for camunda
+
+[Unit]
+Description=Camunda BPM engine
+After=syslog.target network.target
+
+[Service]
+Type=forking
+WorkingDirectory={{camunda_install_dir}}
+
+Environment=CATALINA_PID=/var/run/camunda.pid
+Environment=CATALINA_HOME={{camunda_install_dir}}/server/apache-tomcat-{{camunda_tomcat_ver}}
+Environment=CATALINA_BASE={{camunda_install_dir}}/server/apache-tomcat-{{camunda_tomcat_ver}}
+Environment='CATALINA_OPTS=-Xms{{camunda_tomcat_xms}} -Xmx{{camunda_tomcat_xmx}} -server -XX:+UseParallelGC'
+Environment='JAVA_OPTS=-Djava.awt.headless=true -Djava.security.edg=file:/dev/./urandom'
+
+ExecStart={{camunda_install_dir}}/server/apache-tomcat-{{camunda_tomcat_ver}}/bin/startup.sh
+ExecStop={{camunda_install_dir}}/server/apache-tomcat-{{camunda_tomcat_ver}}/bin/shutdown.sh
+
+User={{camunda_user}}
+Group={{camunda_group}}
+
+[Install]
+WantedBy=multi-user.target

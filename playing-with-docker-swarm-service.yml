@@ -1,0 +1,27 @@
+---
+
+- hosts: manager[0]
+
+  tasks:
+
+    - name: define myservice
+      docker_swarm_service:
+        name: mynginx
+        image: "nginx"
+        restart_policy: any
+        restart_policy_attempts: 5
+        restart_policy_window: 30
+        networks:
+          - traefik-net
+        mode: replicated
+        replicas: 3
+        labels:
+          traefik.port: "80"
+          traefik.backend.loadbalancer.sticky: "true"
+
+      register: dss_out1
+
+    - debug:
+        var: dss_out1
+
+          

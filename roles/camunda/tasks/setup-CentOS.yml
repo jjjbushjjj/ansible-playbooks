@@ -1,0 +1,11 @@
+---
+
+- name: Ensure 8080 is open
+  firewalld: >
+    state=enabled
+  
+    immediate=true
+    permanent=true
+    port=8080/tcp
+
+

@@ -1,0 +1,13 @@
+---
+# handlers file for camunda
+
+- name: systemd-reload
+  command: >
+    systemctl daemon-reload
+  
+- name: camunda restart
+  service: >
+    name=camunda
+    state=restarted
+  
+
