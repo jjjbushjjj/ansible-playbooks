@@ -1,0 +1,15 @@
+---
+# tasks file for my_workstation
+
+
+# first install all packages from provided list using package manager
+
+
+
+
+# Install all needed python modules using pip
+
+
+
+
+# Clone my dotfiles repo and make symlinks to appropriate configs
