@@ -1,0 +1,10 @@
+---
+
+- hosts: victim
+  gather_facts: False
+  pre_tasks:
+    - raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+    - setup:
+
+  roles:
+    - my_workstation

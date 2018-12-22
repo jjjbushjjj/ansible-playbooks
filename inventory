@@ -9,3 +9,5 @@ swarm1 ansible_ssh_host=192.168.1.227 swarm_iface=ens33
 swarm2 ansible_ssh_host=192.168.1.205 swarm_iface=ens33
 swarm3 ansible_ssh_host=192.168.1.212 swarm_iface=ens33
 
+
+victim ansible_ssh_host=192.168.1.252

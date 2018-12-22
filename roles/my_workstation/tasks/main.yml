@@ -3,13 +3,90 @@
 
 
 # first install all packages from provided list using package manager
+- name: Install all packages from default list
+  include_vars: packages.list.yml
 
+- name: Install packages
+  apt: >
+    force_apt_get=yes
+    update_cache=yes
+    name="{{apt_packages}}"
+    state=present
+  
 
-
+- name: Ensure my account is present
+  user: >
+    name="{{me}}"
+  
+    update_password=on_create
+    groups="{{my_groups}}"
+    home="/home/{{me}}"
+    move_home=yes
+    password="$6$.vIzyRS9$RXNlJrPlocaUYHGfTlm5ttBrgH1eTrZ7SP9MeQUEuh76O/o4LvgosDylO57pj5ku20o4dS97JH/jlNA608riQ/"
+    append=yes
+    createhome=yes
+    state=present
+    shell="/bin/zsh"
 
 # Install all needed python modules using pip
-
-
-
+# Good idea to use pipenv or virtualenv and don't mess up here
 
 # Clone my dotfiles repo and make symlinks to appropriate configs
+- name: Create toplevel git folder
+  file: >
+    path=~/git
+  
+    state=directory
+  become: false
+  
+- name: Clone my dotfiles repo
+  git: >
+    dest=~/git/dotfiles
+    repo="https://github.com/jjjbushjjj/dotfiles"
+  
+    track_submodules=yes
+    clone=yes
+    recursive=yes
+    force=yes
+  become: false
+
+- name: Ensure all configured dotfiles are links
+  command: "ls -F {{dotfiles_home}}/{{item}}"
+  register: dotfile_info
+  failed_when: false
+  check_mode: false
+  changed_when: false
+  with_items: "{{dotfiles}}"
+
+
+- name: remove existing dotfiles file if a replacement is beenig linked.
+  file: >
+    path="{{dotfiles_home}}/{{dotfiles[item.0]}}"
+  
+    state=absent
+  when: "'@' not in item.1.stdout"
+  with_indexed_items: "{{dotfile_info.results}}"
+
+  
+# Make symlinks to dotfiles
+- name: Make symlinks to dotfiles
+  file: >
+    path="/home/bush/{{item}}"
+  
+    src="/home/bush/git/dotfiles/{{item}}"
+    force=yes
+    state=link
+  with_items: "{{dotfiles}}"
+  become: false
+
+# Make symlinsk to user defined scripts in /usr/local/bin
+- name: Make symlinks to scripts
+  file: >
+    path="/usr/local/bin/{{item}}"
+  
+    src="/home/bush/git/dotfiles/scripts/{{item}}"
+    force=yes
+    state=link
+  with_items: "{{custom_scripts}}"
+  
+

@@ -1,2 +1,23 @@
 ---
 # vars file for my_workstation
+
+me: bush
+my_groups:
+  - adm
+  - sudo
+
+dotfiles_home: "/home/{{me}}"
+
+dotfiles:
+  - '.vimrc'
+  - '.vim'
+  - 'i3blocks'
+  - '.i3blocks.conf'
+  - '.config/i3'
+  - '.config/gtk-3.0'
+  - '.zshrc'
+  - '.zsh'
+  - '.Xresources'
+
+custom_scripts:
+  - 'virtualenvwrapper.sh'
