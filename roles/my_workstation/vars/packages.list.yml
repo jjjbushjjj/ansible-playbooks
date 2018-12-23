@@ -1,5 +1,6 @@
 ---
 
+# General pakages without specific version. Must be present on every distrbution
 apt_packages:
   - aptitude
   - bbswitch-dkms
@@ -80,3 +81,7 @@ apt_packages:
   - zlib1g-dev
   - zsh
   - nmap
+
+# Packages with version. Those may be or not may be present in your distribution
+ver_packages:
+  - python3.7

@@ -12,7 +12,11 @@
     update_cache=yes
     name="{{apt_packages}}"
     state=present
-  
+
+- name: Install packages with version
+  apt: >
+    name={{ver_packages}}
+    state=present
 
 - name: Ensure my account is present
   user: >
