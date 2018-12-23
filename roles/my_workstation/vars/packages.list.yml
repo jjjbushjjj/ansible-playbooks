@@ -79,3 +79,4 @@ apt_packages:
   - xtrans-dev
   - zlib1g-dev
   - zsh
+  - nmap
