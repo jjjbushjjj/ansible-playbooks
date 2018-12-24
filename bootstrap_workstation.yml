@@ -1,9 +1,10 @@
 ---
 
-- hosts: victim
+- hosts: victim2
   gather_facts: False
   pre_tasks:
     - raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+      changed_when: False
     - setup:
 
   roles:
